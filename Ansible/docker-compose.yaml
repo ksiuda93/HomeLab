@@ -1,0 +1,10 @@
+version: '3'
+services: 
+  ansible: 
+    build: .
+    container_name: 'ansible-homelab'
+    user: gh05t
+    volumes:
+      - ./workdir:/workdir:ro
+      - ./inventory/hosts:/etc/ansible/hosts
+      - ~/.ssh:/home/gh05t/.ssh:ro

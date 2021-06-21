@@ -1,0 +1,27 @@
+---
+- name: Init servers
+  hosts: servers
+  strategy: free
+  remote_user: pi
+
+  tasks:
+  - name: Run apt-get Update
+    become: true
+    apt: 
+      upgrade: yes
+      update_cache: yes
+
+  - name: Set hostname
+    become: true
+    hostname:
+      name: "{{ inventory_hostname }}"
+  
+  - name: Add entries to /etc/hosts
+    become: true
+    lineinfile:
+      dest: /etc/hosts
+      line: "{{ hostvars[item].ansible_host }} {{ hostvars[item].inventory_hostname }}"
+      state: present
+    loop: "{{ play_hosts }}"
+     
+
