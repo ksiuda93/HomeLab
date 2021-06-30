@@ -10,12 +10,25 @@
     apt: 
       upgrade: yes
       update_cache: yes
+    register: apt_status
 
   - name: Set hostname
     become: true
     hostname:
       name: "{{ inventory_hostname }}"
-  
+
+  # Python 2.7.x version cli returns the output to stderr thus all outputs are redirected to stdout
+  - name: Get default Python version
+    shell: |
+      python --version 2>&1 
+    register: python_version
+
+  - name: Select Python3.x as default
+    become: true
+    shell: |
+      update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+    when: python_version.stdout.find('2.7') != -1
+
   - name: Add entries to /etc/hosts
     become: true
     lineinfile:
@@ -23,5 +36,26 @@
       line: "{{ hostvars[item].ansible_host }} {{ hostvars[item].inventory_hostname }}"
       state: present
     loop: "{{ play_hosts }}"
-     
 
+  - name: Check is cgroup enabled?
+    become: true
+    shell: |
+      cat /boot/cmdline.txt
+    register: cmdline_file
+
+  - name: Add cgroup handler
+    become: true
+    shell: |
+      FILE="/boot/firmware/cmdline.txt"
+      cat ${FILE} > /root/cmdline.txt.bckp
+      sed 's/.*/&cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory/' ${FILE} > /root/cmdline.txt.new
+      cat /root/cmdline.txt.new > ${FILE}
+    when: cmdline_file.stdout.find('cgroup') == -1
+    register: cmdline_status
+
+  - name: Reboot servers due to cmdline changes
+    become: true
+    reboot:
+      reboot_timeout: 60
+    when: 
+      - cmdline_status.skipped

@@ -1,10 +1,15 @@
 version: '3'
 services: 
   ansible: 
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args: 
+        USERNAME: gh05t
     container_name: 'ansible-homelab'
     user: gh05t
     volumes:
       - ./workdir:/workdir:ro
-      - ./inventory/hosts:/etc/ansible/hosts
+      - ./workdir/config/ansible.cfg:/etc/ansible/ansible.cfg:ro
+      - ./inventory/hosts:/etc/ansible/hosts:ro
       - ~/.ssh:/home/gh05t/.ssh:ro
