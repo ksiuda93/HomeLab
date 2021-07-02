@@ -15,3 +15,11 @@
     shell: |
       curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--no-deploy servicelb" sh -s -
     when: k3s_service_status.stdout.find('running') == -1
+
+  - name: Export k3s.yaml to use kubectl from remote machine
+    run_once: yes
+    fetch:
+      src: /etc/rancher/k3s/k3s.yaml
+      dest: /workdir/k3s-config/.kubeconfig
+      flat: yes
+    when: "inventory_hostname == 'rp-000'"
