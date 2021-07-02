@@ -29,6 +29,6 @@
     run_once: yes
     fetch:
       src: /etc/rancher/k3s/k3s.yaml
-      dest: /workdir/k3s-config/
+      dest: /workdir/k3s-config/.kubeconfig
       flat: yes
     when: "inventory_hostname == 'rp-000'"
