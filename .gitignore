@@ -1,2 +1,3 @@
 .gitignore
-Ansible/workdir/k3s-config/k3s.yaml
+k3s/k3s-config/.kubeconfig
+k3s/k3s-config/enableContext.sh
