@@ -10,6 +10,7 @@ services:
     user: gh05t
     volumes:
       - ./workdir:/workdir:ro
+      - ./workdir/k3s-config:/workdir/k3s-config:rw
       - ./workdir/config/ansible.cfg:/etc/ansible/ansible.cfg:ro
       - ./inventory/hosts:/etc/ansible/hosts:ro
       - ~/.ssh:/home/gh05t/.ssh:ro

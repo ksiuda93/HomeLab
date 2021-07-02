@@ -1,0 +1,34 @@
+---
+- name: Install k3s on worker nodes
+  hosts: servers
+  remote_user: pi
+  become: true
+
+  tasks:
+
+  # - name: Fetch the k3s master token to Ansible host
+  #   run_once: yes
+  #   fetch:
+  #     src: /var/lib/rancher/k3s/server/node-token
+  #     dest: /tmp/master.token
+  #     flat: yes
+  #   when: "inventory_hostname == 'rp-000'"
+
+  # - name: Send the k3 master token to worker servers
+  #   copy:
+  #     src: /tmp/master.token
+  #     dest: /tmp/master.token
+  #   when: "inventory_hostname == 'rp-001' or inventory_hostname == 'rp-002'"
+
+  # - name: Connect worker to master node
+  #   shell: |
+  #     curl -sfL https://get.k3s.io | K3S_URL=https://192.168.2.110:6443 K3S_TOKEN=$(cat /tmp/master.token) sh -
+  #   when: "inventory_hostname != 'rp-000'"
+
+  - name: Export k3s.yaml to use kubectl from remote machine
+    run_once: yes
+    fetch:
+      src: /etc/rancher/k3s/k3s.yaml
+      dest: /workdir/k3s-config/
+      flat: yes
+    when: "inventory_hostname == 'rp-000'"
