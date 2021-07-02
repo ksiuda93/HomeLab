@@ -2,3 +2,7 @@
 rp-000 ansible_host=192.168.2.110
 rp-001 ansible_host=192.168.2.111
 rp-002 ansible_host=192.168.2.112
+
+
+[master]
+rp-000 ansible_host=192.168.2.110
