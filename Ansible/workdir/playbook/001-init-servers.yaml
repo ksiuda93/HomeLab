@@ -3,17 +3,16 @@
   hosts: servers
   strategy: free
   remote_user: pi
+  become: true
 
   tasks:
   - name: Run apt-get Update
-    become: true
     apt: 
       upgrade: yes
       update_cache: yes
     register: apt_status
 
   - name: Install usefull packages
-    become: true
     apt: 
       pkg: 
         - vim
@@ -21,7 +20,6 @@
         - iputils-ping
 
   - name: Set hostname
-    become: true
     hostname:
       name: "{{ inventory_hostname }}"
 
@@ -32,13 +30,11 @@
     register: python_version
 
   - name: Select Python3.x as default
-    become: true
     shell: |
       update-alternatives --install /usr/bin/python python /usr/bin/python3 1
     when: python_version.stdout.find('2.7') != -1
 
   - name: Add entries to /etc/hosts
-    become: true
     lineinfile:
       dest: /etc/hosts
       line: "{{ hostvars[item].ansible_host }} {{ hostvars[item].inventory_hostname }}"
@@ -46,13 +42,11 @@
     loop: "{{ play_hosts }}"
 
   - name: Check is cgroup enabled?
-    become: true
     shell: |
       cat /boot/firmware/cmdline.txt || echo "missing"
     register: cmdline_file
 
   - name: Enable cgroup 
-    become: true
     lineinfile:
       path: /boot/firmware/cmdline.txt
       line: cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory
@@ -62,7 +56,6 @@
     register: cmdline_status
 
   - name: Reboot servers due to cmdline changes
-    become: true
     reboot:
       reboot_timeout: 90
     when: 

@@ -1,0 +1,22 @@
+---
+- name: Install docker on cluster
+  hosts: servers
+  strategy: free
+  remote_user: pi
+  become: true
+
+  tasks:
+  - name: Check is docker installed
+    shell: |
+      docker --version
+    register: docker_version
+
+  - name: Install docker from get.docker.com
+    shell: |
+      curl -fsSL https://get.docker.com | bash -x
+    when: docker_version.stdout.find('Docker') == -1
+
+  - name: Add `pi` account to docker group
+    user: 
+      name: pi
+      groups: docker
