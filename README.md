@@ -9,6 +9,17 @@ The homeLab repository
     * Enable cgroups in `/boot/cmdline.txt` adding `cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory` <- handled by Ansible playbook `001-init-servers.yaml`
 * Setup static IP Addresses using DHCP option on your router.
 
+## Raspberry Pi POE Hat Fan Control
+
+The POE Hat is quite aggressive fan on default settings. To reduce a noise from constantly booting up/down fan nosie. Add following settings to `/boot/config.txt`
+
+```
+dtparam=poe_fan_temp0=50000
+dtparam=poe_fan_temp1=60000
+dtparam=poe_fan_temp2=70000
+dtparam=poe_fan_temp3=80000
+```
+
 
 ## Ansible
 
