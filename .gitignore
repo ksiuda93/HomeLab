@@ -1,3 +1,4 @@
 .gitignore
 k3s/k3s-config/.kubeconfig
 k3s/k3s-config/enableContext.sh
+./bootstrap.sh
