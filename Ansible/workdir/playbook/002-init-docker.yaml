@@ -8,7 +8,7 @@
   tasks:
   - name: Check is docker installed
     shell: |
-      docker --version
+      docker --version 2>&1; exit 0
     register: docker_version
 
   - name: Install docker from get.docker.com
